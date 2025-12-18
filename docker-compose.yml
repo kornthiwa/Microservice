@@ -1,0 +1,46 @@
+# ชื่อโปรเจกต์ Docker Compose
+name: Nest-Service
+
+# กำหนดส่วนของ services (บริการ) ที่จะรันใน Docker Compose
+services:
+  # กำหนดชื่อ service สำหรับ PostgreSQL database
+  postgres:
+    # ใช้ Docker image ของ PostgreSQL เวอร์ชัน 17.4 บน Alpine Linux 3.21 (ขนาดเล็กและเบา)
+    image: postgres:17.4-alpine3.21
+    # กำหนดชื่อ container ที่จะสร้าง (inventory-db)
+    container_name: database
+    # ตั้งค่าให้ container รีสตาร์ทอัตโนมัติเมื่อหยุดทำงานหรือเมื่อ Docker เริ่มต้น
+    restart: always
+    # กำหนดตัวแปรสภาพแวดล้อมสำหรับ PostgreSQL
+    environment:
+      # ชื่อผู้ใช้สำหรับเข้าสู่ระบบ PostgreSQL
+      POSTGRES_USER: admin
+      # รหัสผ่านสำหรับเข้าสู่ระบบ PostgreSQL
+      POSTGRES_PASSWORD: admin
+      # ชื่อฐานข้อมูลที่จะสร้างอัตโนมัติเมื่อ container เริ่มต้น
+      POSTGRES_DB: nest-service
+    # กำหนดการ mapping ระหว่าง port ของ host และ container
+    ports:
+      # แมป port 5433 ของ host ไปยัง port 5432 (default PostgreSQL port) ของ container
+      - 5433:5432
+
+  # กำหนดชื่อ service สำหรับ pgAdmin (เครื่องมือจัดการฐานข้อมูล PostgreSQL)
+  pgadmin:
+    # ใช้ Docker image ของ pgAdmin4 เวอร์ชันล่าสุด
+    image: dpage/pgadmin4:latest
+    # กำหนดชื่อ container ที่จะสร้าง (pgadmin)
+    container_name: pgadmin
+    # กำหนดตัวแปรสภาพแวดล้อมสำหรับ pgAdmin
+    environment:
+      # อีเมลเริ่มต้นสำหรับเข้าสู่ระบบ pgAdmin
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      # รหัสผ่านเริ่มต้นสำหรับเข้าสู่ระบบ pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: admin
+    # กำหนดการ mapping ระหว่าง port ของ host และ container
+    ports:
+      # แมป port 5051 ของ host ไปยัง port 80 (default HTTP port) ของ container
+      - 5051:80
+    # กำหนดให้ pgAdmin รอให้ postgres service เริ่มต้นก่อน
+    depends_on:
+      # pgAdmin จะรอให้ postgres service พร้อมก่อนที่จะเริ่มต้น
+      - postgres
