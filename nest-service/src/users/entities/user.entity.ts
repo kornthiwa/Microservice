@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from '../../common/entities/base.entity';
 
 export enum Role {
   User = 'user',
@@ -6,10 +7,7 @@ export enum Role {
 }
 
 @Entity('users')
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class User extends BaseEntity {
   @Column({ unique: true })
   username: string;
 

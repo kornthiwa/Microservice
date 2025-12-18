@@ -42,7 +42,7 @@ export class AuthService {
       }
 
       const payload = {
-        sub: user.id,
+        id: user.id,
         username: user.username,
         roles: user.roles ?? [Role.User],
       };
@@ -68,7 +68,11 @@ export class AuthService {
     return this.usersRepository.save(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    currentUserId: number,
+  ) {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) {
       return null;
@@ -79,6 +83,7 @@ export class AuthService {
     if (updateUserDto.password) {
       user.password = await bcryptLib.hash(updateUserDto.password, 10);
     }
+    user.updatedBy = currentUserId;
     return this.usersRepository.save(user);
   }
 }
