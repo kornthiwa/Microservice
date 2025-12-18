@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/entities/user.entity';
+import { Role, User } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 
@@ -41,7 +41,11 @@ export class AuthService {
         throw new UnauthorizedException('รหัสผ่านไม่ถูกต้อง');
       }
 
-      const payload = { sub: user.id, username: user.username };
+      const payload = {
+        sub: user.id,
+        username: user.username,
+        roles: user.roles ?? [Role.User],
+      };
 
       return {
         access_token: await this.jwtService.signAsync(payload),

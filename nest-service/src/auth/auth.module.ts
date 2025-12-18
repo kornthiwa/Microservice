@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { jwtConstants } from './constants';
 import { AuthGuard } from './auth.guard';
+import { RolesGuard } from './roles.guard';
 import { User } from '../users/entities/user.entity';
 
 @Module({
@@ -25,6 +26,10 @@ import { User } from '../users/entities/user.entity';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
   exports: [AuthService],
